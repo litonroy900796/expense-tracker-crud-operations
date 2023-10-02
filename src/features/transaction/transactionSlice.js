@@ -11,8 +11,8 @@ const initialState = {
 };
 
 export const fetchTransaction = createAsyncThunk("transaction/fetchTransactions",async ()=>{
-    const transactions = await getTransaction();
-    return transactions;
+    const transaction = await getTransaction();
+    return transaction;
 })
 export const createTransaction = createAsyncThunk("transaction/addTransactions",async (data)=>{
     const transaction = await addTransaction(data);

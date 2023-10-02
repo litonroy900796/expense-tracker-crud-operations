@@ -1,12 +1,12 @@
 import deleteImage from "../../assets/images/delete.svg";
 import editImage from "../../assets/images/edit.svg";
 
-export default function Transaction() {
+export default function Transaction({transaction}) {
     return (
-        <li className="transaction income">
-            <p>Earned this month</p>
+        <li className={`transaction ${transaction?.type}`}>
+            <p>{transaction.name}</p>
             <div className="right">
-                <p>৳ 100</p>
+                <p>৳ {transaction.amount}</p>
                 <button className="link">
                     <img alt="Edit" className="icon" src={editImage} />
                 </button>
