@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getTransaction,addTransaction ,editTransaction} from "./transactionApi";
+import { getTransaction,addTransaction ,editTransaction, deleteTransaction} from "./transactionApi";
 
 
 
@@ -8,6 +8,7 @@ const initialState = {
     isLoading: false,
     isError: false,
     error: "",
+    editing:{}
 };
 
 export const fetchTransaction = createAsyncThunk("transaction/fetchTransactions",async ()=>{
@@ -22,7 +23,7 @@ export const changeTransaction = createAsyncThunk("transaction/changeTransaction
     const transaction = await editTransaction(id,data);
     return transaction;
 })
-export const deleteTransaction = createAsyncThunk("transaction/deleteTransactions",async (id)=>{
+export const deleteTransactions = createAsyncThunk("transaction/deleteTransactions",async (id)=>{
     const transaction = await deleteTransaction(id);
     return transaction;
 })
@@ -30,6 +31,15 @@ export const deleteTransaction = createAsyncThunk("transaction/deleteTransaction
 const transactionSlice = createSlice({
     name: "transaction",
     initialState,
+    reducers:{
+         activeEdit:(state,action)=>{
+            state.editing=action.payload
+         },
+         cencelEdit: (state)=>{
+            state.editing={}
+            
+         }
+    },
     extraReducers: (builder) =>{
         builder
         .addCase(fetchTransaction.pending , (state,action)=>{
@@ -78,19 +88,20 @@ const transactionSlice = createSlice({
             state.isError = true;
             state.error = action.error?.message;
         })
-        .addCase(deleteTransaction.pending, (state) => {
+        .addCase(deleteTransactions.pending, (state) => {
             state.isError = false;
             state.isLoading = true;
         })
-        .addCase(deleteTransaction.fulfilled, (state, action) => {
+        .addCase(deleteTransactions.fulfilled, (state, action) => {
+            console.log(action);
             state.isError = false;
             state.isLoading = false;
 
             state.transactions = state.transactions.filter(
-                (t) => t.id !== action.payload
+                (t) => t.id !== action.meta.arg
             );
         })
-        .addCase(deleteTransaction.rejected, (state, action) => {
+        .addCase(deleteTransactions.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
             state.error = action.error?.message;
@@ -99,4 +110,5 @@ const transactionSlice = createSlice({
 })
 
 
-export default transactionSlice.reducer
+export default transactionSlice.reducer;
+export const {activeEdit,cencelEdit} = transactionSlice.actions

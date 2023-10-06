@@ -12,9 +12,12 @@ export default function Transactions() {
          dispatch(fetchTransaction())
     },[dispatch])
 
+
     if (!isLoading && isError){
-    return <p>There was an error occured</p>
+
+        return <p>There was an error occured</p>
     }
+   
     if (!isLoading && !isError && transactions?.length === 0) {
        return <p>No transactions found!</p>;
     }

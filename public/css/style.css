@@ -166,7 +166,7 @@ label {
 }
 
 .cancel_edit {
-    display: none;
+    display: block;
     margin-top: 10px;
     background-color: #e6425e !important;
 }

@@ -1,10 +1,16 @@
 {
   "transactions": [
     {
-      "name": "ewfw",
+      "name": "sallery",
       "type": "income",
-      "amount": 900,
+      "amount": 3000,
       "id": 1
+    },
+    {
+      "name": "text",
+      "type": "expense",
+      "amount": 3002,
+      "id": 2
     }
   ]
 }

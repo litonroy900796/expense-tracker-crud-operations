@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createTransaction } from "../features/transaction/transactionSlice";
+import {  cencelEdit, changeTransaction, createTransaction } from "../features/transaction/transactionSlice";
 
 export default function Form() {
     const [name , setName] = useState("");
     const [type , setType] = useState("");
     const [amount, setAmount] = useState("");
+    const [selectEdit, setSelectEdit] = useState(false)
     const dispatch=useDispatch();
-    const {isError}= useSelector(state=> state.transaction);
+    const {isError , editing}= useSelector(state=> state.transaction);
+     
+
 
     const handleCreate =(e)=>{
         e.preventDefault();
@@ -16,12 +19,49 @@ export default function Form() {
             type,
             amount:Number(amount)
         }))
+        resetForm();
+    }
+    const resetForm=()=>{
+         setName("");
+         setType("");
+         setAmount("");
+    }
+
+    useEffect(()=>{
+       if(editing.id){
+     
+        setSelectEdit(true);
+         setName(editing.name);
+         setType(editing.type);
+         setAmount(editing.amount);
+
+         
+       }else{
+        setSelectEdit(false);
+        resetForm();
+
+       }
+     
+    },[editing])
+    const updateForm=(e)=>{
+        e.preventDefault()
+        dispatch(changeTransaction({
+            id:editing.id,
+            data:{
+                name:name,
+                type:type,
+                amount:amount,
+            }
+        }))
+        setSelectEdit(false)
+        resetForm();
+        dispatch(cencelEdit())
     }
 
     return (
         <div className="form">
             <h3>Add new transaction</h3>
-           <form onSubmit={handleCreate}>
+           <form onSubmit={ selectEdit ? updateForm : handleCreate}>
             <div className="form-group">
                 <label htmlFor="transaction_name">Name</label>
                 <input
@@ -72,11 +112,17 @@ export default function Form() {
                 />
             </div>
 
-            <button className="btn">Add Transaction</button>
+            <button className="btn">{selectEdit ? "Update Transaction" : 'Add Transaction'} </button>
             {isError && <p className="error">There was an error occured</p>}
             </form>
 
-            <button className="btn cancel_edit">Cancel Edit</button>
+            {selectEdit && <button onClick={()=> {
+                
+                setSelectEdit(false);
+                resetForm()
+               
+                
+             }} className="btn cancel_edit">Cancel Edit</button>}
         </div>
     );
 }
